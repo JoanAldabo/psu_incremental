@@ -35,9 +35,22 @@ def inicializar_bd():
     conexion.close()
 
 
-def contar_tareas():
-    """Número total de tareas guardadas. Usado solo como comprobación en el Incremento 1."""
+def obtener_tareas():
+    """Todas las tareas guardadas, ordenadas por id ascendente."""
     conexion = obtener_conexion()
-    total = conexion.execute("SELECT COUNT(*) AS total FROM tareas").fetchone()["total"]
+    filas = conexion.execute(
+        "SELECT id, titulo, descripcion, completada FROM tareas ORDER BY id"
+    ).fetchall()
     conexion.close()
-    return total
+    return filas
+
+
+def crear_tarea(titulo, descripcion):
+    """Inserta una tarea nueva. `titulo` es obligatorio; `descripcion` puede ser vacía."""
+    conexion = obtener_conexion()
+    conexion.execute(
+        "INSERT INTO tareas (titulo, descripcion, completada) VALUES (?, ?, 0)",
+        (titulo, descripcion),
+    )
+    conexion.commit()
+    conexion.close()

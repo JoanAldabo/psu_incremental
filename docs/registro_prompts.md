@@ -146,3 +146,88 @@ navegador muestra el texto exacto del Incremento 1).
 **Cómo reproducirlo**: no aplica — es una corrección de ubicación de
 archivos, no un paso de desarrollo.
 
+---
+
+## Entrada 5 — Incremento 2: crear y listar tareas
+
+**Contexto**: continuación directa del plan de incrementos aprobado en
+la Entrada 2 (no hubo un prompt nuevo del usuario para este paso
+concreto; se ejecutó tras la confirmación de la Entrada 4).
+
+**Resultado generado**:
+- `database.py` — `obtener_tareas()` (lista todas las tareas por
+  `id`) y `crear_tarea(titulo, descripcion)`. Se retiró
+  `contar_tareas()` del Incremento 1 por quedar sin uso (la página de
+  comprobación queda sustituida por el listado real).
+- `app.py` — ruta `/` ahora lista las tareas reales; ruta nueva
+  `/tareas/nueva` (GET muestra el formulario, POST valida que el
+  título no esté vacío y, si es válido, inserta la tarea y redirige
+  al listado; si el título falta, reaparece el formulario con un
+  mensaje de error).
+- `templates/index.html` — listado de tareas con título, descripción
+  (si existe) y estado (Pendiente/Completada); mensaje "No hay tareas
+  todavía" cuando está vacío.
+- `templates/nueva_tarea.html` — formulario de alta nuevo.
+
+**Decisión técnica tomada y por qué**: la validación del título
+obligatorio se hace en el propio backend (Flask), no solo con el
+atributo `required` del HTML — así la regla se cumple aunque el
+formulario se manipule o el JavaScript del navegador esté
+desactivado.
+
+**Cómo se verificó**: pruebas automáticas con el cliente de test de
+Flask contra una base de datos limpia: (1) listado vacío muestra el
+mensaje correcto; (2) enviar el formulario sin título no crea ninguna
+tarea y muestra el error; (3) enviar el formulario con título y
+descripción válidos crea exactamente una tarea y aparece en el
+listado como "Pendiente". Se verificó además que el guion largo
+("—") que separa título y descripción llega correctamente codificado
+en UTF-8 en la respuesta HTTP (un mojibake visto en un run de prueba
+anterior era solo un problema de cómo esta terminal imprime el
+carácter, no del contenido real servido por Flask). Tras verificar,
+se borró el archivo `tareas.db` de pruebas para no dejar datos de
+prueba en el proyecto.
+
+**Cómo reproducirlo**: con el entorno virtual activado, ejecutar
+`python app.py`, abrir `http://127.0.0.1:5000/`, pulsar "+ Nueva
+tarea", intentar guardar sin título (debe mostrar el error) y luego
+con un título y descripción (debe aparecer en el listado como
+"Pendiente").
+
+---
+
+## Entrada 6 — Confirmación del Incremento 2 con evidencia
+
+**Prompt literal**:
+
+> "Capturas añadidas. Revisado y aceptado, sigamos."
+
+**Resultado generado**: confirmación verificada del Incremento 2 con
+tres capturas (terminal con el log de peticiones `GET /`, `GET
+/tareas/nueva`, `POST /tareas/nueva` → 302, `GET /` de nuevo;
+navegador mostrando el listado con una tarea creada marcada como
+"Pendiente"; navegador mostrando el formulario de alta vacío). De
+nuevo aparecieron en `actividad1/capturas/` (el proyecto archivado del
+Termómetro de Centro) en vez de en este proyecto — se movieron a
+`actividad1_gestor_tareas/capturas/` con nombres descriptivos
+(`incremento2-terminal.png`, `incremento2-listado.png`,
+`incremento2-formulario.png`) y se dejó sin cambios el repositorio Git
+de `actividad1/` (los archivos habían quedado en stage ahí; se
+revirtieron con `git reset HEAD` antes de moverlos, para no dejar ese
+proyecto archivado con cambios pendientes).
+
+**Nota para el usuario** (no bloqueante): esto ya ha pasado dos veces
+seguidas — probablemente la herramienta de capturas tenga
+`actividad1/capturas/` configurada como carpeta de guardado por
+defecto desde la sesión anterior. Si cambias ese destino a
+`actividad1_gestor_tareas/capturas/` te ahorras que seamos nosotros
+quienes lo corrijamos cada vez.
+
+**Cómo se verificó**: se abrieron las tres imágenes para confirmar que
+correspondían al Incremento 2 de este proyecto (URLs
+`127.0.0.1:5000/` y `127.0.0.1:5000/tareas/nueva`, contenido textual
+coincidente con las plantillas `index.html`/`nueva_tarea.html`).
+
+**Cómo reproducirlo**: no aplica — corrección de ubicación de
+archivos.
+
