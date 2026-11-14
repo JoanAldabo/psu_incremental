@@ -1,11 +1,18 @@
 """Gestor de tareas — punto de entrada de la aplicación Flask.
 
-Incremento 2: crear y listar tareas.
+Incremento 3: marcar completada/pendiente y editar tareas existentes.
 """
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
-from database import crear_tarea, inicializar_bd, obtener_tareas
+from database import (
+    actualizar_tarea,
+    alternar_estado,
+    crear_tarea,
+    inicializar_bd,
+    obtener_tarea,
+    obtener_tareas,
+)
 
 app = Flask(__name__)
 inicializar_bd()
@@ -27,6 +34,31 @@ def nueva_tarea():
             return redirect(url_for("listar_tareas"))
         return render_template("nueva_tarea.html", error="El título es obligatorio.")
     return render_template("nueva_tarea.html", error=None)
+
+
+@app.route("/tareas/<int:id_tarea>/editar", methods=["GET", "POST"])
+def editar_tarea(id_tarea):
+    tarea = obtener_tarea(id_tarea)
+    if tarea is None:
+        abort(404)
+    if request.method == "POST":
+        titulo = request.form.get("titulo", "").strip()
+        descripcion = request.form.get("descripcion", "").strip()
+        if titulo:
+            actualizar_tarea(id_tarea, titulo, descripcion)
+            return redirect(url_for("listar_tareas"))
+        return render_template(
+            "editar_tarea.html", tarea=tarea, error="El título es obligatorio."
+        )
+    return render_template("editar_tarea.html", tarea=tarea, error=None)
+
+
+@app.route("/tareas/<int:id_tarea>/alternar", methods=["POST"])
+def alternar(id_tarea):
+    if obtener_tarea(id_tarea) is None:
+        abort(404)
+    alternar_estado(id_tarea)
+    return redirect(url_for("listar_tareas"))
 
 
 if __name__ == "__main__":

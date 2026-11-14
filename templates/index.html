@@ -15,6 +15,10 @@
                 <strong>{{ tarea.titulo }}</strong>
                 {% if tarea.descripcion %} — {{ tarea.descripcion }}{% endif %}
                 ({{ "Completada" if tarea.completada else "Pendiente" }})
+                <form method="post" action="{{ url_for('alternar', id_tarea=tarea.id) }}" style="display:inline;">
+                    <button type="submit">{{ "Marcar pendiente" if tarea.completada else "Marcar completada" }}</button>
+                </form>
+                <a href="{{ url_for('editar_tarea', id_tarea=tarea.id) }}">Editar</a>
             </li>
         {% endfor %}
         </ul>

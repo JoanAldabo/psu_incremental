@@ -54,3 +54,36 @@ def crear_tarea(titulo, descripcion):
     )
     conexion.commit()
     conexion.close()
+
+
+def obtener_tarea(id_tarea):
+    """Una tarea por id, o None si no existe."""
+    conexion = obtener_conexion()
+    fila = conexion.execute(
+        "SELECT id, titulo, descripcion, completada FROM tareas WHERE id = ?",
+        (id_tarea,),
+    ).fetchone()
+    conexion.close()
+    return fila
+
+
+def actualizar_tarea(id_tarea, titulo, descripcion):
+    """Actualiza el título y la descripción de una tarea existente."""
+    conexion = obtener_conexion()
+    conexion.execute(
+        "UPDATE tareas SET titulo = ?, descripcion = ? WHERE id = ?",
+        (titulo, descripcion, id_tarea),
+    )
+    conexion.commit()
+    conexion.close()
+
+
+def alternar_estado(id_tarea):
+    """Invierte el estado completada/pendiente de una tarea."""
+    conexion = obtener_conexion()
+    conexion.execute(
+        "UPDATE tareas SET completada = 1 - completada WHERE id = ?",
+        (id_tarea,),
+    )
+    conexion.commit()
+    conexion.close()

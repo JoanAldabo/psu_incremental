@@ -231,3 +231,47 @@ coincidente con las plantillas `index.html`/`nueva_tarea.html`).
 **Cómo reproducirlo**: no aplica — corrección de ubicación de
 archivos.
 
+---
+
+## Entrada 7 — Incremento 3: marcar completada/pendiente y editar
+
+**Contexto**: continuación directa del plan de incrementos tras la
+confirmación de la Entrada 6.
+
+**Resultado generado**:
+- `database.py` — `obtener_tarea(id)` (una tarea o `None`),
+  `actualizar_tarea(id, titulo, descripcion)` y `alternar_estado(id)`
+  (invierte `completada` con `1 - completada`, sin necesidad de leer
+  el valor antes).
+- `app.py` — ruta `POST /tareas/<id>/alternar` (cambia el estado y
+  redirige al listado; `404` si el id no existe) y ruta
+  `/tareas/<id>/editar` (GET muestra el formulario con los valores
+  actuales; POST valida título obligatorio y guarda cambios; `404` si
+  el id no existe).
+- `templates/index.html` — cada tarea del listado incorpora un botón
+  para alternar su estado (el texto cambia según el estado actual) y
+  un enlace "Editar".
+- `templates/editar_tarea.html` — formulario de edición nuevo,
+  prellenado con el título y la descripción actuales.
+
+**Decisión técnica tomada y por qué**: el botón de alternar estado es
+un formulario HTML independiente por tarea (`POST`), no un enlace
+`GET` — cambiar de estado modifica datos, así que no debe poder
+disparase con un simple clic de enlace o un rastreador/precarga del
+navegador (buena práctica básica, no solo estética).
+
+**Cómo se verificó**: pruebas automáticas con el cliente de test de
+Flask contra una base de datos limpia: crear una tarea (queda
+"Pendiente" por defecto) → alternar a "Completada" → alternar de
+vuelta a "Pendiente" → abrir el formulario de edición y comprobar que
+aparece prellenado → intentar editar con título vacío (debe fallar sin
+cambiar nada) → editar con datos válidos (el listado refleja el nuevo
+título y descripción) → pedir una tarea inexistente (`id=999`) en
+editar y en alternar, ambas devuelven `404`.
+
+**Cómo reproducirlo**: con el entorno virtual activado, ejecutar
+`python app.py`, crear una tarea, pulsar "Marcar completada" (debe
+pasar a "Completada" y el botón debe decir "Marcar pendiente"), pulsar
+"Editar", cambiar el título/descripción y guardar (debe verse el
+cambio en el listado).
+
