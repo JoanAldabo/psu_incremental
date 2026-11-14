@@ -1,6 +1,6 @@
 """Gestor de tareas — punto de entrada de la aplicación Flask.
 
-Incremento 3: marcar completada/pendiente y editar tareas existentes.
+Incremento 4: eliminar tarea, con pantalla de confirmación previa.
 """
 
 from flask import Flask, abort, redirect, render_template, request, url_for
@@ -9,6 +9,7 @@ from database import (
     actualizar_tarea,
     alternar_estado,
     crear_tarea,
+    eliminar_tarea,
     inicializar_bd,
     obtener_tarea,
     obtener_tareas,
@@ -59,6 +60,17 @@ def alternar(id_tarea):
         abort(404)
     alternar_estado(id_tarea)
     return redirect(url_for("listar_tareas"))
+
+
+@app.route("/tareas/<int:id_tarea>/eliminar", methods=["GET", "POST"])
+def eliminar(id_tarea):
+    tarea = obtener_tarea(id_tarea)
+    if tarea is None:
+        abort(404)
+    if request.method == "POST":
+        eliminar_tarea(id_tarea)
+        return redirect(url_for("listar_tareas"))
+    return render_template("eliminar_tarea.html", tarea=tarea)
 
 
 if __name__ == "__main__":

@@ -87,3 +87,11 @@ def alternar_estado(id_tarea):
     )
     conexion.commit()
     conexion.close()
+
+
+def eliminar_tarea(id_tarea):
+    """Borra una tarea de forma permanente."""
+    conexion = obtener_conexion()
+    conexion.execute("DELETE FROM tareas WHERE id = ?", (id_tarea,))
+    conexion.commit()
+    conexion.close()

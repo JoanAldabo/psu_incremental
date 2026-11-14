@@ -275,3 +275,82 @@ pasar a "Completada" y el botón debe decir "Marcar pendiente"), pulsar
 "Editar", cambiar el título/descripción y guardar (debe verse el
 cambio en el listado).
 
+---
+
+## Entrada 8 — Incremento 4: eliminar tarea con confirmación
+
+**Prompt literal**: "confirmado" (confirmación del Incremento 3, dando
+paso al siguiente del plan ya aprobado).
+
+**Resultado generado**:
+- `database.py` — `eliminar_tarea(id)` (`DELETE FROM tareas WHERE id
+  = ?`).
+- `app.py` — ruta `/tareas/<id>/eliminar`: `GET` muestra una pantalla
+  de confirmación (sin borrar nada todavía); `POST` borra de verdad y
+  redirige al listado. `404` si el id no existe, en ambos métodos.
+- `templates/eliminar_tarea.html` — pantalla de confirmación nueva,
+  con el título/descripción de la tarea a borrar, aviso de que la
+  acción no se puede deshacer, y un enlace para cancelar.
+- `templates/index.html` — enlace "Eliminar" por tarea, que lleva a la
+  pantalla de confirmación (no borra directamente al hacer clic).
+
+**Decisión técnica tomada y por qué**: igual que con "alternar estado"
+en el Incremento 3, el borrado real solo ocurre por `POST` — el enlace
+"Eliminar" del listado solo navega a una pantalla de confirmación
+(`GET`, sin efectos secundarios); borrar es la acción más destructiva
+de toda la aplicación, así que es la que más justifica un paso
+explícito de confirmación antes de ejecutarla.
+
+**Cómo se verificó**: pruebas automáticas con el cliente de test de
+Flask: crear dos tareas → abrir la pantalla de confirmación de una de
+ellas con `GET` y comprobar que la tarea sigue existiendo (la
+confirmación no borra por sí sola) → confirmar con `POST` y comprobar
+que esa tarea desaparece del listado mientras la otra permanece
+intacta → pedir eliminar una tarea inexistente (`id=999`) con `GET` y
+con `POST`, ambas devuelven `404`.
+
+**Cómo reproducirlo**: con el entorno virtual activado, ejecutar
+`python app.py`, crear una tarea, pulsar "Eliminar" (debe aparecer la
+pantalla de confirmación, sin borrar nada todavía), pulsar "Sí,
+eliminar" (debe volver al listado sin esa tarea). Probar también
+"Cancelar y volver al listado" para comprobar que no borra nada.
+
+---
+
+## Entrada 9 — Confirmación de los Incrementos 3 y 4 con evidencia
+
+**Prompt literal**:
+
+> "Capturas de ambos incrementos añadidas. Revisado y aceptado,
+> sigamos."
+
+**Resultado generado**: confirmación verificada con 7 capturas en
+total. Incremento 3: listado con una tarea "Pendiente" y el botón
+"Marcar completada"; la misma tarea tras alternar, como "Completada"
+con el botón "Marcar pendiente"; terminal con el log de
+`GET/POST /tareas/nueva` y `POST /tareas/1/alternar`. Incremento 4:
+listado con el enlace "Eliminar" visible junto a "Editar"; pantalla de
+confirmación "¿Eliminar esta tarea?" con el aviso de que no se puede
+deshacer; listado vacío ("No hay tareas todavía") tras confirmar el
+borrado; terminal con el log completo `GET /`, `POST /tareas/nueva`,
+`GET /tareas/1/eliminar`, `POST /tareas/1/eliminar`.
+
+De nuevo las 7 capturas aparecieron en `actividad1/capturas/` (el
+proyecto archivado) en vez de en este proyecto — se movieron a
+`actividad1_gestor_tareas/capturas/` con nombres descriptivos
+(`incremento3-pendiente.png`, `incremento3-completada.png`,
+`incremento3-terminal.png`, `incremento4-listado-con-eliminar.png`,
+`incremento4-confirmacion.png`,
+`incremento4-listado-vacio-tras-borrar.png`,
+`incremento4-terminal.png`) y se dejó sin cambios pendientes el
+repositorio Git de `actividad1/` (se revirtió el `git add` automático
+con `git reset HEAD` antes de mover los archivos).
+
+**Cómo se verificó**: se abrieron las 7 imágenes para confirmar a qué
+incremento correspondía cada una por su contenido visible (URL, texto
+de la página, líneas del log del servidor) antes de renombrarlas y
+moverlas.
+
+**Cómo reproducirlo**: no aplica — corrección de ubicación de
+archivos.
+

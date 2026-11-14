@@ -19,6 +19,7 @@
                     <button type="submit">{{ "Marcar pendiente" if tarea.completada else "Marcar completada" }}</button>
                 </form>
                 <a href="{{ url_for('editar_tarea', id_tarea=tarea.id) }}">Editar</a>
+                <a href="{{ url_for('eliminar', id_tarea=tarea.id) }}">Eliminar</a>
             </li>
         {% endfor %}
         </ul>
