@@ -87,3 +87,62 @@ confirmado, pedir "propón el plan de incrementos" equivalente al punto
    `README.md` con instrucciones reales y probadas para ejecutar la
    app en local.
 
+---
+
+## Entrada 3 — Confirmación del plan, Incremento 1 implementado
+
+**Prompt literal**:
+
+> "confirmo, acuerdate de ir documentando y todo ok?"
+
+**Resultado generado — Incremento 1 (estructura + modelo de datos)**:
+- `database.py` — conexión SQLite (`tareas.db`, creada junto al
+  proyecto) y `inicializar_bd()`, que crea la tabla `tareas`
+  (`id`, `titulo`, `descripcion`, `completada`) solo si no existe
+  todavía.
+- `app.py` — aplicación Flask mínima; llama a `inicializar_bd()` al
+  arrancar y expone una única ruta `/` de comprobación.
+- `templates/index.html` — página que confirma la conexión a la base
+  de datos mostrando cuántas tareas hay guardadas (0 por ahora).
+- `.venv/` — entorno virtual Python 3.12 creado en el propio proyecto,
+  con Flask 3.1.3 instalado.
+- `requirements.txt` — `Flask==3.1.3`.
+
+**Cómo se verificó**: se ejecutó la app con el cliente de pruebas de
+Flask (sin levantar un servidor real) contra una base de datos nueva:
+la petición a `/` devolvió código 200 y el texto "Tareas guardadas
+actualmente: 0"; se inspeccionó `tareas.db` y el esquema de la tabla
+creada coincide exactamente con el diseñado.
+
+**Cómo reproducirlo**: desde la carpeta del proyecto, con el entorno
+virtual activado, ejecutar `python app.py` y abrir
+`http://127.0.0.1:5000/` en el navegador — debe mostrar el mensaje de
+comprobación con 0 tareas guardadas (o el número real si ya existía
+`tareas.db` de una ejecución anterior).
+
+---
+
+## Entrada 4 — Confirmación del Incremento 1 con evidencia
+
+**Prompt literal**:
+
+> "Revisado y aceptado, funciona correctamente. Capturas añadidas."
+
+**Resultado generado**: confirmación verificada por el propio usuario
+(terminal de Flask arrancando y navegador mostrando la página de
+comprobación con el mensaje del Incremento 1). Las dos capturas
+estaban guardadas por error en la carpeta del proyecto antiguo
+archivado (`actividad1/capturas/`, el Termómetro de Centro) en vez de
+en la de este proyecto — se movieron a
+`actividad1_gestor_tareas/capturas/`, renombradas de forma descriptiva
+(`incremento1-terminal.png`, `incremento1-navegador.png`), y se borró
+la carpeta `capturas/` que había quedado vacía en `actividad1/`.
+
+**Cómo se verificó**: se abrieron ambas imágenes para confirmar que
+correspondían efectivamente a este proyecto (el prompt de la terminal
+muestra la ruta `actividad1_gestor_tareas`, y la página en el
+navegador muestra el texto exacto del Incremento 1).
+
+**Cómo reproducirlo**: no aplica — es una corrección de ubicación de
+archivos, no un paso de desarrollo.
+
