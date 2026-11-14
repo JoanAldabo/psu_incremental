@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Nueva tarea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Nueva tarea</h1>
 
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
 
-    <form method="post">
-        <label>Título (obligatorio):<br>
+    <form method="post" class="formulario-tarea">
+        <label>Título (obligatorio):
             <input type="text" name="titulo" required>
-        </label><br><br>
-        <label>Descripción (opcional):<br>
+        </label>
+        <label>Descripción (opcional):
             <textarea name="descripcion"></textarea>
-        </label><br><br>
+        </label>
         <button type="submit">Guardar</button>
     </form>
 

@@ -354,3 +354,87 @@ moverlas.
 **Cómo reproducirlo**: no aplica — corrección de ubicación de
 archivos.
 
+---
+
+## Entrada 10 — Incremento 5: pulir interfaz, mensajes de confirmación y documentación
+
+**Prompt literal**: "confirmado, sigamos" (confirmación de los
+Incrementos 3 y 4, dando paso al último incremento del plan).
+
+**Resultado generado**:
+- `static/style.css` — estilos mínimos: tipografía legible, tarjetas
+  para cada tarea, tachado y color atenuado para las tareas
+  completadas, caja verde para los mensajes de confirmación.
+- `app.py` — `flash()` tras crear, editar, alternar estado y eliminar
+  una tarea, cada uno con un mensaje concreto (incluye el título de la
+  tarea afectada). Requiere `app.secret_key`; se fijó un valor
+  constante porque la aplicación es de un solo usuario en local, sin
+  datos sensibles (coherente con la decisión ya tomada de no añadir
+  autenticación).
+- `templates/index.html` — muestra los mensajes de confirmación
+  (`get_flashed_messages`) y aplica la clase `completada`/`pendiente`
+  a cada tarea para el estilo visual.
+- `templates/nueva_tarea.html`, `editar_tarea.html` — enlazan el
+  mismo CSS y usan la clase `formulario-tarea`.
+- `.gitignore` nuevo (`.venv/`, `__pycache__/`, `*.pyc`, `tareas.db`)
+  — no estaba pedido explícitamente en el plan, pero es higiene básica
+  antes de subir el código a un repositorio, y entra dentro del
+  criterio de "organización y presentación" de la rúbrica.
+- `README.md` — descripción breve, requisitos, instrucciones de
+  ejecución en local paso a paso, resumen de funcionalidad y
+  estructura del proyecto.
+
+**Cómo se verificó**: pruebas automáticas con el cliente de test de
+Flask: crear una tarea y comprobar que aparece el mensaje de
+confirmación correcto y la clase CSS `pendiente`; alternar su estado y
+comprobar el mensaje "marcada como completada" y la clase
+`completada`; editar y comprobar el mensaje de actualización;
+eliminar y comprobar el mensaje de eliminación y que el listado queda
+vacío; comprobar que `/static/style.css` se sirve correctamente y
+contiene la regla `.completada`.
+
+**Cómo reproducirlo**: con el entorno virtual activado, ejecutar
+`python app.py` y repetir el ciclo completo (crear, marcar completada,
+editar, eliminar) comprobando que tras cada acción aparece un mensaje
+verde de confirmación en la parte superior del listado, y que las
+tareas completadas se ven tachadas y en gris.
+
+**Con esto se completa el plan de 5 incrementos aprobado en la Entrada
+2.** La aplicación cubre toda la funcionalidad mínima definida en
+`docs/definicion_proyecto.md`.
+
+---
+
+## Entrada 11 — Confirmación del Incremento 5 con evidencia
+
+**Prompt literal**:
+
+> "Capturas añadidas, probado a mano y funcionando. Revisado y
+> aceptado."
+
+**Resultado generado**: confirmación verificada con 7 capturas del
+ciclo completo del Incremento 5: listado vacío con los estilos ya
+aplicados, formulario de nueva tarea con estilos, mensaje verde
+"Tarea «test» creada.", tarea marcada como completada (tachada, en
+gris) con el mensaje "marcada como completada", pantalla de
+confirmación de borrado, mensaje "Tarea «test» eliminada." con el
+listado vacío de nuevo, y el log del servidor completo (incluye las
+peticiones a `/static/style.css`, con `200` la primera vez y `304` —
+sin cambios, cacheado — en las siguientes).
+
+Las 7 capturas aparecieron, por tercera vez, en una carpeta distinta
+de este proyecto dentro del proyecto archivado (`actividad1/captura/`,
+sin "s" esta vez — variante nueva de la misma confusión). Se movieron
+a `actividad1_gestor_tareas/capturas/` con nombres descriptivos
+(prefijo `incremento5-`) y se dejó `actividad1/` sin cambios
+pendientes en su repositorio Git.
+
+**Cómo se verificó**: se abrieron las 7 imágenes para confirmar el
+contenido antes de renombrarlas y moverlas.
+
+**Nota**: la prueba manual cubrió crear, completar, editar y eliminar
+tareas. Seguían pendientes, como acción del usuario, subir el código
+a un repositorio/zip y redactar el informe técnico.
+
+**Cómo reproducirlo**: no aplica — corrección de ubicación de
+archivos.

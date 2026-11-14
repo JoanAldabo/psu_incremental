@@ -1,0 +1,85 @@
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    color: #222;
+}
+
+h1 {
+    margin-bottom: 0.25rem;
+}
+
+a {
+    color: #1a5fb4;
+}
+
+.mensajes {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.mensaje-exito {
+    background: #e6f4ea;
+    color: #1e4620;
+    border: 1px solid #b7dfbd;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+ul.lista-tareas {
+    list-style: none;
+    padding: 0;
+}
+
+ul.lista-tareas li {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+li.pendiente {
+    background: #fff;
+}
+
+li.completada {
+    background: #f3f3f3;
+}
+
+li.completada .titulo-tarea {
+    text-decoration: line-through;
+    color: #777;
+}
+
+.estado {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+form.formulario-tarea label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+form.formulario-tarea input[type="text"],
+form.formulario-tarea textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.4rem;
+    box-sizing: border-box;
+}
+
+.error {
+    color: #c01c28;
+}
+
+button {
+    cursor: pointer;
+}

@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestor de tareas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Gestor de tareas</h1>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            <ul class="mensajes">
+            {% for categoria, mensaje in mensajes %}
+                <li class="mensaje-{{ categoria }}">{{ mensaje }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     <p><a href="{{ url_for('nueva_tarea') }}">+ Nueva tarea</a></p>
 
     {% if tareas %}
-        <ul>
+        <ul class="lista-tareas">
         {% for tarea in tareas %}
-            <li>
-                <strong>{{ tarea.titulo }}</strong>
-                {% if tarea.descripcion %} — {{ tarea.descripcion }}{% endif %}
-                ({{ "Completada" if tarea.completada else "Pendiente" }})
+            <li class="{{ 'completada' if tarea.completada else 'pendiente' }}">
+                <span class="titulo-tarea"><strong>{{ tarea.titulo }}</strong>{% if tarea.descripcion %} — {{ tarea.descripcion }}{% endif %}</span>
+                <span class="estado">({{ "Completada" if tarea.completada else "Pendiente" }})</span>
                 <form method="post" action="{{ url_for('alternar', id_tarea=tarea.id) }}" style="display:inline;">
                     <button type="submit">{{ "Marcar pendiente" if tarea.completada else "Marcar completada" }}</button>
                 </form>
