@@ -438,3 +438,72 @@ a un repositorio/zip y redactar el informe técnico.
 
 **Cómo reproducirlo**: no aplica — corrección de ubicación de
 archivos.
+
+---
+
+## Entrada 12 — Reconstrucción del historial Git, un commit por incremento, y push
+
+**Prompt literal**:
+
+> "aquí está el repo en github https://github.com/JoanAldabo/psu_incremental,
+> si quiero un commit por incremento" / "si" (confirmación final para
+> el push)
+
+**Resultado generado**: repositorio Git inicializado en el proyecto
+(no existía ninguno hasta este momento) y conectado a
+`https://github.com/JoanAldabo/psu_incremental` (`origin`). Se
+reconstruyó el estado exacto de cada incremento a partir del contenido
+real que se fue escribiendo a lo largo de la conversación, y se creó
+un commit por cada uno:
+
+1. `654830d` — Definición del proyecto y arranque del registro de
+   prompts (Tarea 1).
+2. `be063fe` — Incremento 1: estructura del proyecto y modelo de
+   datos.
+3. `1fd1e7e` — Incremento 2: crear y listar tareas.
+4. `8bd5d8d` — Incremento 3: marcar completada/pendiente y editar.
+5. `cb55920` — Incremento 4: eliminar tarea con confirmación.
+6. `db55c3c` — Incremento 5: pulir interfaz, mensajes de confirmación
+   y documentación final.
+
+El repositorio remoto ya tenía un "Initial commit" trivial (README de
+una sola línea autogenerado por GitHub al crear el repo) — se trajo
+como base del historial local (en vez de descartarlo) para no requerir
+un `push --force`; el push final fue un fast-forward normal.
+
+**Decisión técnica tomada y por qué**: en cada commit se escribió el
+contenido real y completo de los archivos tal y como existían en ese
+punto del desarrollo (no diffs aproximados), para que el historial sea
+honesto y cada commit represente un estado real del código, no una
+reconstrucción aparente.
+
+**Cómo se verificó**:
+- Se clonó el repositorio local reconstruido a una carpeta temporal y
+  se recorrió cada commit (`git checkout` uno a uno) ejecutando
+  `GET /` con el cliente de pruebas de Flask — los 4 commits con
+  código devolvieron `200`.
+- Durante esta verificación se encontró un **fallo real**: en el
+  commit del Incremento 4, `app.py` ya importaba y llamaba a
+  `eliminar_tarea`, pero `database.py` no la definía todavía (quedó
+  fuera por error al reconstruir ese commit) — habría sido un
+  `ImportError` al arrancar. Se corrigió añadiendo la función que
+  faltaba y se rehizo el commit (`git commit --amend`) antes de
+  continuar, ya que todavía no se había subido nada al remoto.
+- Se comparó el estado final del commit del Incremento 5 contra una
+  copia de seguridad del proyecto real (`diff -r`, sin diferencias) y
+  se volvió a ejecutar el mismo test de humo.
+- Tras el push, se confirmó con `git log --oneline origin/main` que el
+  remoto contiene exactamente los 6 commits esperados.
+
+**Cómo reproducirlo**: no aplica directamente — es una operación de
+control de versiones sobre un código que ya existía, no un paso de
+desarrollo nuevo. Para repetir el patrón en otro proyecto: reconstruir
+el contenido real de cada etapa, comprobar que cada commit arranca por
+separado antes de subir nada, y solo hacer push cuando sea
+fast-forward (o pedir confirmación explícita si hiciera falta un
+`--force`).
+
+**Pendiente**: solo queda el informe técnico en PDF (criterio 1, 2 y 4
+de la rúbrica se apoyan directamente en este archivo y en
+`docs/definicion_proyecto.md`; el análisis crítico final es tarea del
+usuario).
